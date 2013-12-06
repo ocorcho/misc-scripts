@@ -18,8 +18,10 @@
 # limitations under the License.
 #
 
-USER=nandana
+USER=ocorcho
 PASSWORD=
+ORG=oeg-upm
+TEAMID=568017  #This can be obtained doing  curl -u ''$USER:$PASSWORD'' https://api.github.com/orgs/$ORG/teams
 REPO_URL=$1
 REGEX="^https:\/\/github.com/([a-zA-Z0-9_\.-]+)/([a-zA-Z0-9_\.-]+)$"
 
@@ -45,14 +47,20 @@ else
     exit 1
 fi
 
-# create an empty repository 
-curl -u ''$USER:$PASSWORD'' https://api.github.com/user/repos -d '{"name":"'$REPO'"}'
+# create an empty repository for the corresponding organisation and assigning it to the corresponding team inside the organisation
+#Uncomment the following if it is for a single user
+#curl -u ''$USER:$PASSWORD'' https://api.github.com/user/repos -d '{"name":"'$REPO'"}'
+#Use the following if it is for an organisation and a team (although the team bit does not seem to work right now)
+curl -u ''$USER:$PASSWORD'' https://api.github.com/orgs/$ORG/repos -d '{"name":"'$REPO'"}'
+curl -u ''$USER:$PASSWORD'' -X PUT https://api.github.com/teams/$TEAMID/repos/$ORG/$REPO
 
 # create a mirrored clone
 git clone --mirror $REPO_URL.git
 # set the url to make the push easier
 cd $REPO.git
-git remote set-url --push origin https://$USER:$PASSWORD@github.com/$USER/$REPO
+#git remote set-url --push origin https://$USER:$PASSWORD@github.com/$USER/$REPO
+git remote set-url --push origin https://$USER:$PASSWORD@github.com/$ORG/$REPO
+
 # Update the mirror
 git fetch -p origin
 git push --mirror
