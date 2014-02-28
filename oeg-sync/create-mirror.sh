@@ -19,7 +19,7 @@
 #
 
 USER=ocorcho
-PASSWORD=
+PASSWORD=$2
 ORG=oeg-upm
 TEAMID=568017  #This can be obtained doing  curl -u ''$USER:$PASSWORD'' https://api.github.com/orgs/$ORG/teams
 REPO_URL=$1
@@ -27,12 +27,12 @@ REGEX="^https:\/\/github.com/([a-zA-Z0-9_\.-]+)/([a-zA-Z0-9_\.-]+)$"
 
 display_usage() { 
     echo "This script creates a mirror repository in https://github.com/oeg-upm" 
-    echo "Usage: create-mirror.sh <original-repo-url> "
-    echo "Eg. create-mirror.sh https://github.com/nandana/misc-scripts"
+    echo "Usage: create-mirror.sh <original-repo-url> <<your password>>"
+    echo "Eg. create-mirror.sh https://github.com/nandana/misc-scripts <<your password>>"
 } 
 
 # check for the number of parameters
-if [  $# -le 0 ] 
+if [  $# -le 1 ]
  then 
   display_usage
   exit 1
